@@ -72,7 +72,7 @@ public class Bullect {
     }
 
     public void collideWith(Tank tank) {
-        if(this.group == tank.getGroup()){
+        if (this.group == tank.getGroup()) {
             return;
         }
         Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
@@ -80,6 +80,7 @@ public class Bullect {
         if (rect1.intersects(rect2)) {
             tank.die();
             this.die();
+            tf.explodes.add(new Explode(x, y, tf));
         }
     }
 
