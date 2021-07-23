@@ -11,7 +11,6 @@ public class Explode {
     public static final int WIDTH = ResourcrMgr.explodes[0].getWidth(),
             HEIGHT = ResourcrMgr.explodes[0].getHeight();
 
-    private boolean live = true;
     private int x, y;
     TankFrame tf = null;
     private int step = 0;
@@ -26,10 +25,8 @@ public class Explode {
     }
 
     public void paint(Graphics g) {
-        if (!live) {
-            tf.bullectList.remove(this);
-        }
         g.drawImage(ResourcrMgr.explodes[step++], x, y, null);
+
         if (step >= ResourcrMgr.explodes.length) {
             tf.explodes.remove(this);
         }

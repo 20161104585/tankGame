@@ -72,9 +72,18 @@ public class Tank {
                 break;
 
         }
-        if (random.nextInt(10) > 8) {
-            this.fire();
+        if (this.group == Group.BAD) {
+            if(random.nextInt(100) > 95){
+                randomDir();
+            }
+            if(random.nextInt(100) > 95){
+                this.fire();
+            }
         }
+    }
+
+    private void randomDir() {
+        this.dir = Dir.values()[random.nextInt(4)];
     }
 
 
