@@ -12,13 +12,14 @@ public class Tank {
     private int x, y;
     private Dir dir = Dir.DOWN;
     private static final int SPEED = 5;
-    public static final int WIDTH = ResourcrMgr.tankD.getWidth(),
-            HEIGHT = ResourcrMgr.tankD.getHeight();
+    public static final int WIDTH = ResourcrMgr.goodTankU.getWidth(),
+            HEIGHT = ResourcrMgr.goodTankU.getHeight();
     private boolean living = true;
     private boolean moving = true;
     private Random random = new Random();
     private TankFrame tf = null;
     private Group group = Group.BAD;
+    Rectangle rect = new Rectangle();
 
     public Tank(int x, int y, Dir dir, Group group, TankFrame tf) {
         super();
@@ -27,6 +28,11 @@ public class Tank {
         this.dir = dir;
         this.group = group;
         this.tf = tf;
+
+        rect.x = this.x;
+        rect.y = this.y;
+        rect.width = WIDTH;
+        rect.height = HEIGHT;
     }
 
     public void paint(Graphics g) {
@@ -35,16 +41,16 @@ public class Tank {
         }
         switch (dir) {
             case LEFT:
-                g.drawImage(ResourcrMgr.tankL, x, y, null);
+                g.drawImage(this.group == Group.GOOD ? ResourcrMgr.goodTankL : ResourcrMgr.badTankL, x, y, null);
                 break;
             case UP:
-                g.drawImage(ResourcrMgr.tankU, x, y, null);
+                g.drawImage(this.group == Group.GOOD ? ResourcrMgr.goodTankU : ResourcrMgr.badTankU, x, y, null);
                 break;
             case RIGHT:
-                g.drawImage(ResourcrMgr.tankR, x, y, null);
+                g.drawImage(this.group == Group.GOOD ? ResourcrMgr.goodTankR : ResourcrMgr.badTankR, x, y, null);
                 break;
             case DOWN:
-                g.drawImage(ResourcrMgr.tankD, x, y, null);
+                g.drawImage(this.group == Group.GOOD ? ResourcrMgr.goodTankD : ResourcrMgr.badTankD, x, y, null);
                 break;
         }
 
@@ -73,12 +79,30 @@ public class Tank {
 
         }
         if (this.group == Group.BAD) {
-            if(random.nextInt(100) > 95){
+            if (random.nextInt(100) > 95) {
                 randomDir();
             }
-            if(random.nextInt(100) > 95){
+            if (random.nextInt(100) > 95) {
                 this.fire();
             }
+        }
+        boundsCheck();
+        rect.x = this.x;
+        rect.y = this.y;
+    }
+
+    private void boundsCheck() {
+        if (this.x < 2) {
+            x = 2;
+        }
+        if (this.y < 28) {
+            y = 28;
+        }
+        if (this.x > TankFrame.GAME_WIDTH - Tank.WIDTH - 2) {
+            x = TankFrame.GAME_WIDTH - Tank.WIDTH - 2;
+        }
+        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT - 2) {
+            y = TankFrame.GAME_HEIGHT - Tank.HEIGHT - 2;
         }
     }
 
