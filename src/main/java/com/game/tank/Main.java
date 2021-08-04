@@ -1,7 +1,5 @@
 package main.java.com.game.tank;
 
-import java.awt.*;
-
 /**
  * @Description: 坦克大战主函数
  * @Author: haole
@@ -11,8 +9,9 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         TankFrame tf = new TankFrame();
 
-        for (int i = 0; i < 5; i++) {
-            tf.tankList.add(new Tank(50 +i*50,50,Dir.DOWN,Group.BAD,tf));
+        int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
+        for (int i = 0; i < initTankCount; i++) {
+            tf.tankList.add(new Tank(50 + i * 50, 50, Dir.DOWN, Group.BAD, tf));
         }
         while (true) {
             Thread.sleep(50);
