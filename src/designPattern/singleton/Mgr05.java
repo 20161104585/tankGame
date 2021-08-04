@@ -6,7 +6,7 @@ package designPattern.singleton;
  * 可以通过synchronized解决，但也带来效率下降
  */
 public class Mgr05 {
-    private static Mgr05 INSTANCE;
+    private static volatile Mgr05 INSTANCE; //JIT
 
     private Mgr05() {
     }
