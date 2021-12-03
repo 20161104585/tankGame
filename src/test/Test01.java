@@ -97,13 +97,19 @@ public class Test01 {
 
         try {
             DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date startDate = dateFormat2.parse("2021-11-14 09:00:00");
+            Date startDate = dateFormat2.parse("2021-11-23 09:25:32");
             Date endDate = new Date();
-            Integer time = getDaysBetweenTwoDate(startDate, endDate);
+            System.out.println(endDate);
+            Integer time = getDaysBetweenTwoDate(startDate, new Date());
             System.out.println("时间差值为：" + time);
+            if(getDaysBetweenTwoDate(startDate, new Date())>=3){
+                System.out.println("mingzhogngadf：" + time);
+            }
         }catch (Exception e){
             System.out.println(e.getMessage());
+            System.out.println("捕获发放异常了");
         }
+        System.out.println("zdafafadsfasd");
     }
 
     public static Map<String, Object> testCd() {
@@ -120,6 +126,18 @@ public class Test01 {
         testString.setCur(cur);
         System.out.println("no problem!");
         return testString;
+    }
+
+
+
+    public static TestString testException(){
+        try {
+            int i = 1/1;
+        }catch (Exception e){
+            System.out.println("异常了！！！！！！");
+        }
+        System.out.println("异常后输出！！");
+        return null;
     }
 
     /**
@@ -140,6 +158,7 @@ public class Test01 {
         cal.setTime(lastDate);
         long time2 = cal.getTimeInMillis();
         long days = (time2 - time1) / (1000 * 3600 * 24);
+        System.out.println("两个日期之间相差的天数:" + days);
         Integer intDays = Integer.parseInt(String.valueOf(days));
         return intDays;
     }
