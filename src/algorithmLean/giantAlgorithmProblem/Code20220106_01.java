@@ -1,6 +1,5 @@
 package algorithmLean.giantAlgorithmProblem;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -19,11 +18,11 @@ public class Code20220106_01 {
         long start = System.currentTimeMillis();
         int kinds = 10;
         int range = 200;
-        int testTime = 10000;
+        int testTime = 1000000;
         int max = 9;
         for (int i = 0; i <= testTime; i++) {
-            int a = (int) Math.random() * max + 1; //1~9之间的数
-            int b = (int) Math.random() * max + 1; //1~9之间的数
+            int a = (int) (Math.random() * max + 1); //1~9之间的数
+            int b = (int) (Math.random() * max + 1); //1~9之间的数
             int k = Math.min(a, b);
             int m = Math.max(a, b);
             if (k == m) {
@@ -112,8 +111,24 @@ public class Code20220106_01 {
         }
         int ans = 0;
         for (int i = 0; i < 32; i++) {
-            if ((t[i] % M) != 0) {
+            if ((t[i] % M) == 0) {
+                continue;
+            }
+            if ((t[i] % M) == K) {
                 ans |= (1 << i);
+            } else {
+                return -1;
+            }
+        }
+        if (ans == 0) {
+            int count = 0;
+            for (int num : arr) {
+                if (num == 0) {
+                    count++;
+                }
+            }
+            if (count != K) {
+                return -1;
             }
         }
         return ans;
@@ -144,10 +159,13 @@ public class Code20220106_01 {
      */
     public static int[] randomArray(int maxKinds, int range, int k, int m) {
         int kTimeNum = randomNumber(range);
+
+        //真命天子出现的次数。
+        int times = Math.random() < 0.5 ? k : ((int) (Math.random() * (m - 1)) + 1);
         int numKinds = (int) (Math.random() * maxKinds) + 2;
-        int[] arr = new int[k + (numKinds - 1) * m];
+        int[] arr = new int[times + (numKinds - 1) * m];
         int index = 0;
-        for (; index < k; index++) {
+        for (; index < times; index++) {
             arr[index] = kTimeNum;
         }
         numKinds--;
