@@ -8,8 +8,9 @@ package algorithmLean.giantAlgorithmProblem;
 public class Node {
     public Object value;
     public Node next;
+    public Node rand;
 
-    public Node(int date) {
+    public Node(Object date) {
         this.value = date;
     }
 
