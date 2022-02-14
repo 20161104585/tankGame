@@ -431,6 +431,56 @@ public class Code20220210_01 {
     }
 
     /**
+     * 递归套路判断是否完全二叉树
+     */
+    public static class InfoCBT {
+        private boolean isFull;
+        private boolean isCBT;
+        private int height;
+
+        public InfoCBT(boolean isFull, boolean isCBT, int h) {
+            this.isFull = isFull;
+            this.isCBT = isCBT;
+            this.height = h;
+        }
+    }
+
+    public static boolean isCBT2(Node head) {
+        return processIsCBT(head).isCBT;
+    }
+
+    public static InfoCBT processIsCBT(Node head) {
+        if (head == null) {
+            return new InfoCBT(true, true, 0);
+        }
+
+        InfoCBT left = processIsCBT(head.left);
+        InfoCBT right = processIsCBT(head.right);
+        int height = Math.max(left.height, right.height) + 1;
+        boolean isFull = left.isFull && right.isFull && left.height == right.height;
+
+
+        boolean isCBT = false;
+        //左满右满，且左高等右高
+        if (left.isFull && right.isFull && left.height == right.height) {
+            isCBT = true;
+        }
+        //左完，右满，左高等右高加一
+        if (left.isCBT && right.isFull && left.height == right.height + 1) {
+            isCBT = true;
+        }
+        //左满，右满，左高等右高加一
+        if (left.isFull && right.isFull && left.height == right.height + 1) {
+            isCBT = true;
+        }
+        //左满，右完，左高等右高加一
+        if (left.isFull && right.isCBT && left.height == right.height + 1) {
+            isCBT = true;
+        }
+        return new InfoCBT(isFull, isCBT, height);
+    }
+
+    /**
      * 给定一颗二叉树的头节点，判断该树是否为平衡二叉树
      * 描述：平衡二叉树（Balanced Binary Tree）又被称为AVL树（有别于AVL算法），
      * 且具有以下性质：它是一 棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。
@@ -701,6 +751,94 @@ public class Code20220210_01 {
             }
         }
         System.out.println("finish!");
+    }
+
+    /**
+     * 给定一个节点a，一个节点b，一棵二叉树的头节点，找出a，b节点的最低公共祖先
+     */
+    public static class InfoLowe {
+        private boolean findA;
+        private boolean findB;
+        private Node ans;
+
+        public InfoLowe(boolean fa, boolean fb, Node ans) {
+            this.findA = fa;
+            this.findB = fb;
+            this.ans = ans;
+        }
+    }
+
+    public static Node findABLowe(Node x, Node a, Node b) {
+        return processLowe(x, a, b).ans;
+    }
+
+    public static InfoLowe processLowe(Node x, Node a, Node b) {
+        if (x == null) {
+            return new InfoLowe(false, false, null);
+        }
+
+        InfoLowe leftInfo = processLowe(x.left, a, b);
+        InfoLowe rightInfo = processLowe(x.right, a, b);
+
+        boolean findA = (a == x) || leftInfo.findA || rightInfo.findA;
+        boolean findB = (b == x) || leftInfo.findB || rightInfo.findB;
+        Node ans = null;
+        if (leftInfo.ans != null) {
+            ans = leftInfo.ans;
+        } else if (rightInfo.ans != null) {
+            ans = rightInfo.ans;
+        } else {
+            if (findA && findB) {
+                ans = x;
+            }
+        }
+
+
+        return new InfoLowe(findA, findB, ans);
+    }
+
+    /**
+     * 多叉树，获取最大快乐值
+     */
+    public static class Employee {
+        public int happy;
+        public List<Employee> nexts;
+
+        public Employee(int h) {
+            happy = h;
+            nexts = new ArrayList<>();
+        }
+
+    }
+
+    public static class InfoEmp {
+        private int no;
+        private int yes;
+
+        public InfoEmp(int no, int yes) {
+            this.no = no;
+            this.yes = yes;
+        }
+    }
+
+    public static int maxHappy(Employee head) {
+        InfoEmp info = processMaxHappy(head);
+        return Math.max(info.no, info.yes);
+    }
+
+    public static InfoEmp processMaxHappy(Employee x) {
+        if (x == null) {
+            return new InfoEmp(0, 0);
+        }
+        int no = 0;
+        int yes = x.happy;
+        for (Employee e : x.nexts) {
+            InfoEmp nextInfo = processMaxHappy(e);
+            yes += nextInfo.no;
+            no += Math.max(nextInfo.no, nextInfo.yes);
+        }
+
+        return new InfoEmp(no, yes);
     }
 
 }
