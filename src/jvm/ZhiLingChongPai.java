@@ -19,6 +19,7 @@ public class ZhiLingChongPai {
             b = 0;
             x = 0;
             y = 0;
+            // 门栓锁
             CountDownLatch countDownLatch = new CountDownLatch(2);
 
             new Thread(() -> {
