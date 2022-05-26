@@ -1,5 +1,8 @@
 package jvm;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -14,6 +17,7 @@ public class ZhiLingChongPai {
 
     //验证指令重排
     public static void main(String[] args) throws InterruptedException {
+        List<String> list = Collections.synchronizedList(new ArrayList<>());
         for (int i = 0; i < TOTAL; i++) {
             a = 0;
             b = 0;
