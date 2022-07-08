@@ -1,5 +1,7 @@
 package algorithmLean.review;
 
+import java.util.*;
+
 /**
  * @Description: 堆排序及其相关面试题
  * @Author: haole
@@ -7,29 +9,304 @@ package algorithmLean.review;
  */
 public class Code20220629_01 {
 
+    public static void main(String[] args) {
+        int[] arr = new int[]{5, 2, 4, 6, 9, 7, 8, 13, 11, 15};
+        sortElement(arr, 3);
+        for (int i : arr) {
+            System.out.print(i + ",");
+        }
+
+        HashMap<Integer, String> hashMap = new HashMap<>();
+        hashMap.put(1, "胜多负少");
+        hashMap.put(2, "以少胜多");
+
+        System.out.println(hashMap.get("afdf"));
+        ;
+    }
+
 
     /**
-     * 堆结构的实现、堆排序的实现
+     * 堆结构的实现
+     * 完全二叉树：每一个节点的位置（i）对于左孩子的位置为2*i+1;右孩子的位置为2*i+2;父节点的位置为(i-1)/2
+     * <p>
+     * 实现heapInsert功能，数组新加一个数，判断其是否大于父节点，大于则与父节点交换，否则结束
      */
+    private static void heapInsert(int[] arr, int index) {
+        while (arr[index] > arr[(index - 1) / 2]) {
+            swap(arr, index, (index - 1) / 2);
+            index = (index - 1) / 2;
+        }
+    }
 
+
+    /**
+     * 实现heapify功能，将数组中最大的数下沉到最后并返回，堆大小减一
+     */
+    private static void heapify(int[] arr, int index, int heapSize) {
+        // 先算出左孩子的下标位置
+        int left = index * 2 + 1;
+        // 如果有左孩子
+        while (left < heapSize) {
+            // 找出左右子树最大的那个数的下标值
+            int largest = left + 1 < heapSize && arr[left + 1] > arr[left] ? left + 1 : left;
+            // 最大的孩子与自身比较
+            largest = arr[largest] > arr[index] ? largest : index;
+            // 如果最大的数是自身，说明下沉到底部了，结束并返回
+            if (largest == index) {
+                break;
+            }
+            // 否则两数交换位置
+            swap(arr, largest, index);
+            // index下沉
+            index = largest;
+            // 重新计算当前数的左子树下标
+            left = index * 2 + 1;
+        }
+
+    }
+
+    /**
+     * @param arr
+     * @param i
+     * @param j
+     */
+    private static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+    /**
+     * 堆排序的实现
+     */
+    private static void heapSort(int[] arr) {
+        // 边界判断
+        if (arr == null || arr.length < 2) {
+            return;
+        }
+        // 先调整为大根堆
+//        for (int i = 0; i < arr.length; i++) {
+//            heapInsert(arr, i);
+//        }
+        for (int i = arr.length - 1; i >= 0; i--) {
+            heapify(arr, i, arr.length);
+        }
+
+        // pop 出最大值(即头节点)，让其放到最后位置，并断连它
+        int heapSize = arr.length;
+        swap(arr, 0, --heapSize);
+        // 循环找出最大值并交换断连
+        while (heapSize > 0) {
+            heapify(arr, 0, heapSize);
+            swap(arr, 0, --heapSize);
+        }
+    }
 
     /**
      * 已知一个几乎有序的数组。几乎有序是指，如果把数组排好顺序的话，每个元素移动的距离一定不超过k
      * k相对于数组长度来说是比较小的。请选择一个合适的排序策略，对这个数组进行排序。
      */
+    private static void sortElement(int[] arr, int k) {
+        if (arr == null || arr.length < 2) {
+            return;
+        }
+
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(k + 1);
+        for (int i = 0; i < k + 1; i++) {
+            priorityQueue.add(arr[i]);
+        }
+        int j = 0;
+        while (!priorityQueue.isEmpty()) {
+            arr[j] = priorityQueue.poll();
+            if (j + k + 1 < arr.length) {
+                priorityQueue.add(arr[j + k + 1]);
+            }
+            j++;
+        }
+    }
+
+
     /**
      * 线段最大重合问题
      * 给定很多线段，每个线段都有两个数[start, end]，
      * 表示线段开始位置和结束位置，左右都是闭区间
      * 规定：
-     *      1）线段的开始和结束位置一定都是整数值
-     *      2）线段重合区域的长度必须>=1
+     * 1）线段的开始和结束位置一定都是整数值
+     * 2）线段重合区域的长度必须>=1
      * 返回线段最多重合区域中，包含了几条线段
      */
+    private static class Line {
+        private int start;
+        private int end;
+
+        public Line(int s, int e) {
+            this.start = s;
+            this.end = e;
+        }
+    }
+
+    private static class MyComparator implements Comparator<Line> {
+        @Override
+        public int compare(Line o1, Line o2) {
+            return o1.start - o2.start;
+        }
+    }
+
+    public static int maxLine(int[][] arr) {
+        Line[] lines = new Line[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            Line line = new Line(arr[i][0], arr[i][1]);
+            lines[i] = line;
+        }
+        Arrays.sort(lines, new MyComparator());
+
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+        int max = 0;
+        for (Line line : lines) {
+            while (!priorityQueue.isEmpty() && priorityQueue.peek() <= line.start) {
+                priorityQueue.poll();
+            }
+            priorityQueue.add(line.end);
+            max = Math.max(max, priorityQueue.size());
+        }
+        return max;
+    }
+
     /**
      * 加强堆的实现
+     * 加强堆改写，首先需要定义堆数组、反向索引表、堆大小、比较器，构造方法；
+     * 其次需要实现，isEmpty判空功能，size获取堆大小功能，contains校验对象是否存在功能（反相索引表实现），peek查看堆顶元素功能，
+     * push堆中加入元素功能，pop弹出堆顶功能，resgin某一元素修改后重新调整堆功能，remove移除指定元素功能，
+     * 需实现私有方法，heapify，heapInsert，swap（其中实现反向索引表的更新）
      */
+    public static class HeapGreater<T> {
+        private ArrayList<T> heap;
+        private HashMap<T, Integer> indexMap;
+        private int heapSize;
+        private Comparator<? super T> comparator;
 
+        public HeapGreater(Comparator<T> c) {
+            heap = new ArrayList<>();
+            indexMap = new HashMap<>();
+            heapSize = 0;
+            comparator = c;
+        }
+
+        /**
+         * 判空功能
+         */
+        public boolean isEmpty() {
+            return heapSize == 0;
+        }
+
+        /**
+         * 获取堆大小功能
+         */
+        public int size() {
+            return heapSize;
+        }
+
+        /**
+         * 校验对象是否存在
+         */
+        public boolean contains(T obj) {
+            return indexMap.containsKey(obj);
+        }
+
+        /**
+         * 查看堆顶元素
+         *
+         * @return
+         */
+        public T peek() {
+            return heap.get(0);
+        }
+
+        /**
+         * 添加元素
+         *
+         * @param obj
+         */
+        public void push(T obj) {
+            heap.add(obj);
+            indexMap.put(obj, heapSize);
+            heapInsert(heapSize++);
+        }
+
+        /**
+         * 弹出元素
+         *
+         * @return
+         */
+        public T pop() {
+            T ans = heap.get(0);
+            swap(0, heapSize - 1);
+            indexMap.remove(ans);
+            heap.remove(--heapSize);
+            heapify(0);
+            return ans;
+        }
+
+        /**
+         * 修改元素并重新调整堆结构
+         *
+         * @param obj
+         */
+        public void resgin(T obj) {
+            heapify(indexMap.get(obj));
+            heapInsert(indexMap.get(obj));
+        }
+
+        /**
+         * 移除指定元素功能
+         *
+         * @param obj
+         */
+        public void remove(T obj) {
+            T replace = heap.get(heapSize - 1);
+            int index = indexMap.get(obj);
+            indexMap.remove(obj);
+            heap.remove(--heapSize);
+            if (obj != replace) {
+                indexMap.put(replace, index);
+                heap.set(index, replace);
+                resgin(replace);
+            }
+        }
+
+        private void heapInsert(int index) {
+            while (comparator.compare(heap.get(index), heap.get((index - 1) / 2)) < 0) {
+                swap(index, ((index - 1) / 2));
+                index = (index - 1) / 2;
+            }
+        }
+
+        private void heapify(int index) {
+            int left = index * 2 + 1;
+            while (left < heapSize) {
+                int lagest = left + 1 < heapSize && comparator.compare(heap.get(left), heap.get(left + 1)) > 0 ? (left + 1) : left;
+                lagest = comparator.compare(heap.get(index), heap.get(lagest)) < 0 ? index : lagest;
+                if (lagest == index) {
+                    break;
+                }
+                swap(index, lagest);
+                index = lagest;
+                left = index * 2 + 1;
+            }
+        }
+
+
+        private void swap(int i, int j) {
+            T o1 = heap.get(i);
+            T o2 = heap.get(j);
+            heap.set(i, o2);
+            heap.set(j, o1);
+            indexMap.put(o1, j);
+            indexMap.put(o2, i);
+        }
+
+
+    }
 
     /**
      * 给定一个整型数组，int[] arr；和一个布尔类型数组，boolean[] op；

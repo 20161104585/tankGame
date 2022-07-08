@@ -351,7 +351,7 @@ public class Code20220206_01 {
         }
 
         public void remove(T obj) {
-            T replace = heap.get(indexMap.get(heapSize - 1));
+            T replace = heap.get(heapSize - 1);
             int index = indexMap.get(obj);
             indexMap.remove(obj);
             heap.remove(--heapSize);
